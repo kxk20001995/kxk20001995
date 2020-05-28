@@ -1,43 +1,55 @@
-/*编程序实现功能：随机产生50个具有三位整数两位小数的实型数据，并将这些数据写入到指定文件中，
-要求写入文件的两个数据之间用空格分隔。
-	[提示]
-	指定写入实数：setiosflags(ios::fixed)
-	指定2位小数： setprecision(2)
-（二）编制程序实现功能：处理实验（一）部分产生的数据文件，将其中整数部分为偶数的数据进行修改，
-把这些数据的整数部分修改为恰好比原数据小的奇数。*/
 #include<iostream>
-#include<iomanip>
-#include<random>
-#include<ctime>
-#include<fstream>
+#include<string>
+#include<cmath>
 using namespace std;
+
+void change(char& x, int &n, int& num, int& l, int& i)
+{
+	if (48 <= x && x <= 57) num = num + (x - 48) * pow(n, l - i - 1);
+	else num = num + (x - 55) * pow(n, l - i - 1);
+}
 
 int main()
 {
-	default_random_engine e(time(0));//引擎，生成随机序列。time(0)是设置的种子，保证每次产生的序列不同
-	uniform_real_distribution<double> u(-1000, 1000);//分布
+	int n, m;
+	cin >> n;
 
-	double a;
+	string s;
+	cin >> s;
 
-	ofstream fout("b.txt");//如果此文件存在，则打开并进行 写 操作；若不存在，则创建此文件
-	ifstream fin("b.txt");//进行读取文件数据
+	cin >> m;
 
-	for (int i = 0, x = 0; i < 50; i++)
+	int num = 0;
+	int l = s.length();
+
+	for (int i = 0; s[i] != '\0'; i++) change(s[i], n, num, l, i);
+	
+	string s1="";
+	int r;
+
+	do
 	{
-		a = u(e);
+		r = num % m;
+		num = num / m;
 
-		if (a<100.0 && a>-100.0)//如果整数部分为小于三位数，则重新生成随机数
-		{
-			i--;
-			continue;
-		}
+		if(r == 0) s1.insert(0, "0");
+		else if (r == 1) s1.insert(0, "1");
+		else if (r == 2) s1.insert(0, "2");
+		else if (r == 3) s1.insert(0, "3");
+		else if (r == 4) s1.insert(0, "4");
+		else if (r == 5) s1.insert(0, "5");
+		else if (r == 6) s1.insert(0, "6");
+		else if (r == 7) s1.insert(0, "7");
+		else if (r == 8) s1.insert(0, "8");
+		else if (r == 9) s1.insert(0, "9");
+		else if (r == 10) s1.insert(0, "A");
+		else if (r == 11) s1.insert(0, "B");
+		else if (r == 12) s1.insert(0, "C");
+		else if (r == 13) s1.insert(0, "D");
+		else if (r == 14) s1.insert(0, "E");
+		else if (r == 15) s1.insert(0, "F");
+	} while (num != 0);
 
-		x = int(a);//强制类型转换，取随机数的整数部分
-		if (x % 2 == 0) a = a - 1;//若整数部分为偶数，把整数部分修改为恰好比原数据小的奇数
-		fout << setiosflags(ios::fixed) << setprecision(2) << a << endl;
-	}
-
-	fout.close();//关闭此文件
-	fin.close();
+	cout << s1 << endl;
 	return 0;
 }
