@@ -1,59 +1,43 @@
-/*C++编写一个函数模拟动态分配数组的内存空间。
-函数具有一个整型参数，它代表待分配的一个整型数组元素的个数。 
-函数应当完成必要的出错检测（如参数为0或负数），
-如果内存空间充足，那么就分配需要的空间，并返回指向该空间的 指针；否则返回一个空指针*/
+/*编程序实现功能：随机产生50个具有三位整数两位小数的实型数据，并将这些数据写入到指定文件中，
+要求写入文件的两个数据之间用空格分隔。
+	[提示]
+	指定写入实数：setiosflags(ios::fixed)
+	指定2位小数： setprecision(2)
+（二）编制程序实现功能：处理实验（一）部分产生的数据文件，将其中整数部分为偶数的数据进行修改，
+把这些数据的整数部分修改为恰好比原数据小的奇数。*/
 #include<iostream>
-#include<cstdlib>
-#include<exception>
+#include<iomanip>
+#include<random>
+#include<ctime>
+#include<fstream>
 using namespace std;
-
-int* p;		//全局变量
-
-int* ARRAY(int x)
-{
-	if (x <= 0)		//出错检测
-	{
-		cout << "false!!!" << endl;
-		exit(1);		//表示非正常运行导致退出程序
-	}
-
-	//try		
-	//{
-	//	p = new int[x];		//如果内存不够，返回NULL指针
-	//}
-	//catch (exception)
-	//{
-	//	int* p0 = NULL;
-	//	cout << "指针申请失败，内存不足！！！" << endl;
-	//	return p0;
-	//}
-	//cout << p << endl;
-	//return p;
-
-	//方法二：（内存不够时自动中止）
-	if (p == NULL)
-	{
-		cout << "指针申请失败，内存不足！！！" << endl;
-		cout << p << endl;
-		delete[] p;		//释放p指针
-
-		int* p0 = NULL;
-		return p0;		//返回一个空指针
-	}
-	else
-	{
-		cout << p << endl;
-		return p;
-	}
-
-	//你也可以使用vector或者malloc函数
-}
 
 int main()
 {
-	int x;
-	cin >> x;		//确定ARRAY（）函数实参值
-	ARRAY(x);
-	delete[]p;		//释放p指针
+	default_random_engine e(time(0));//引擎，生成随机序列。time(0)是设置的种子，保证每次产生的序列不同
+	uniform_real_distribution<double> u(-1000, 1000);//分布
+
+	double a;
+
+	ofstream fout("b.txt");//如果此文件存在，则打开并进行 写 操作；若不存在，则创建此文件
+	ifstream fin("b.txt");//进行读取文件数据
+
+	for (int i = 0, x = 0; i < 50; i++)
+	{
+		a = u(e);
+
+		if (a<100.0 && a>-100.0)//如果整数部分为小于三位数，则重新生成随机数
+		{
+			i--;
+			continue;
+		}
+
+		x = int(a);//强制类型转换，取随机数的整数部分
+		if (x % 2 == 0) a = a - 1;//若整数部分为偶数，把整数部分修改为恰好比原数据小的奇数
+		fout << setiosflags(ios::fixed) << setprecision(2) << a << endl;
+	}
+
+	fout.close();//关闭此文件
+	fin.close();
 	return 0;
 }
